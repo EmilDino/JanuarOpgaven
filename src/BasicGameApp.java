@@ -1,11 +1,15 @@
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
+import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.settings.GameSettings;
+import com.almasb.fxgl.texture.Texture;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
@@ -13,9 +17,13 @@ import java.util.Map;
 
 public class BasicGameApp extends GameApplication {
 
+    public enum EntityType {
+        PLAYER, COIN
+    }
+
     @Override
     protected void initSettings(GameSettings settings) {
-        settings.setWidth(800);
+        settings.setWidth(600);
         settings.setHeight(600);
         settings.setTitle("Basic Game App");
         settings.setVersion("0.1");
@@ -68,10 +76,32 @@ public class BasicGameApp extends GameApplication {
     @Override
     protected void initGame() {
         player = Entities.builder()
+                .type(EntityType.PLAYER)
                 .at(300, 300)
-                .viewFromNode(new Rectangle(25, 25, Color.BLUE))
+                .viewFromTextureWithBBox("brick.png")
+                .with(new CollidableComponent(true))
+                .buildAndAttach(getGameWorld());
+
+        Entities.builder()
+                .type(EntityType.COIN)
+                .at(500, 200)
+                .viewFromNodeWithBBox(new Circle(15, Color.YELLOW))
+                .with(new CollidableComponent(true))
                 .buildAndAttach(getGameWorld());
     }
+
+    @Override
+    protected void initPhysics() {
+        getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PLAYER, EntityType.COIN) {
+
+            // order of types is the same as passed into the constructor
+            @Override
+            protected void onCollisionBegin(Entity player, Entity coin) {
+                coin.removeFromWorld();
+            }
+        });
+    }
+
 
     @Override
     protected void initUI() {
@@ -82,6 +112,13 @@ public class BasicGameApp extends GameApplication {
         textPixels.textProperty().bind(getGameState().intProperty("pixelsMoved").asString());
 
         getGameScene().addUINode(textPixels); // add to the scene graph
+
+        Texture brickTexture = getAssetLoader().loadTexture("brick.png");
+        brickTexture.setTranslateX(50);
+        brickTexture.setTranslateY(450);
+
+        getGameScene().addUINode(brickTexture);
+
     }
 
     public static void main(String[] args) {
