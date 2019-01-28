@@ -25,12 +25,22 @@ public class PlatformerApp extends GameApplication {
             protected void onAction() {
                 player.getControl(PlayerControl.class).left();
             }
+
+            @Override
+            protected void onActionEnd() {
+                player.getControl(PlayerControl.class).stop();
+            }
         }, KeyCode.A);
 
         getInput().addAction(new UserAction("Right") {
             @Override
             protected void onAction() {
                 player.getControl(PlayerControl.class).right();
+            }
+
+            @Override
+            protected void onActionEnd() {
+                player.getControl(PlayerControl.class).stop();
             }
         }, KeyCode.D);
 
@@ -40,6 +50,13 @@ public class PlatformerApp extends GameApplication {
                 player.getControl(PlayerControl.class).jump();
             }
         }, KeyCode.W);
+
+        getInput().addAction(new UserAction("Dive") {
+            @Override
+            protected void onAction() {
+                player.getControl(PlayerControl.class).dive();
+            }
+        }, KeyCode.S);
     }
 
     // Gets the map created in Tiled and makes it the map of the game
@@ -52,9 +69,10 @@ public class PlatformerApp extends GameApplication {
         player = getGameWorld().spawn("player", 50, 50);
     }
 
-    // handles collisions and removes coins when touched by the player
+    // handles collisions
     @Override
     protected void initPhysics() {
+        // removes coins when touched by the player
         getPhysicsWorld().addCollisionHandler(new CollisionHandler(PlatformerType.PLAYER, PlatformerType.COIN) {
             @Override
             protected void onCollisionBegin(Entity player, Entity coin) {
@@ -62,6 +80,7 @@ public class PlatformerApp extends GameApplication {
             }
         });
 
+        // shows that the level is completed when the player  touches the door
         getPhysicsWorld().addCollisionHandler(new CollisionHandler(PlatformerType.PLAYER, PlatformerType.DOOR) {
             @Override
             protected void onCollisionBegin(Entity player, Entity door) {

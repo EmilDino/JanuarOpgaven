@@ -25,6 +25,7 @@ public class PlatformerFactory implements EntityFactory {
                 .build();
     }
 
+    // spawns the door in game
     @Spawns("door")
     public Entity newDoor(SpawnData data) {
         return Entities.builder()
