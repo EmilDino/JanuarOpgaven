@@ -4,6 +4,9 @@ import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.settings.GameSettings;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
+
+import java.util.Map;
 
 
 public class PlatformerApp extends GameApplication {
@@ -77,6 +80,7 @@ public class PlatformerApp extends GameApplication {
             @Override
             protected void onCollisionBegin(Entity player, Entity coin) {
                 coin.removeFromWorld();
+                getGameState().increment("coinsCollected", +1);
             }
         });
 
@@ -90,6 +94,25 @@ public class PlatformerApp extends GameApplication {
             }
         });
     }
+
+    // coin counter
+    @Override
+    protected void initGameVars(Map<String, Object> vars) {
+        vars.put("coinsCollected", 0);
+    }
+
+    // sets the location of the coin counter
+    @Override
+    protected void initUI() {
+        Text textPixels = new Text();
+        textPixels.setTranslateX(50);
+        textPixels.setTranslateY(100);
+
+        textPixels.textProperty().bind(getGameState().intProperty("coinsCollected").asString());
+
+        getGameScene().addUINode(textPixels);
+    }
+
 
     // Launches the game
     public static void main(String[] args) {

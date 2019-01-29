@@ -13,9 +13,8 @@ public class PlayerControl extends Control {
 
     }
 
+    // this is so the player can only jump on ground
      boolean canJump = true;
-
-
 
     // determines how fast the player moves to the left
     public void left() {
@@ -29,7 +28,7 @@ public class PlayerControl extends Control {
         physics.setVelocityX(150);
     }
 
-    // determines how much the player jumps
+    // determines how high the player jumps
     public void jump() {
         if (canJump == true) {
             physics.setVelocityY(-400);
