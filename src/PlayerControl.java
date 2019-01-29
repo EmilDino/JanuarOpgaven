@@ -14,7 +14,7 @@ public class PlayerControl extends Control {
     }
 
     // this is so the player can only jump on ground
-     boolean canJump = true;
+     boolean canJump = false;
 
     // determines how fast the player moves to the left
     public void left() {

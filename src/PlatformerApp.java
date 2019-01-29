@@ -16,6 +16,10 @@ public class PlatformerApp extends GameApplication {
     protected void initSettings (GameSettings settings) {
         settings.setWidth(15 * 70);
         settings.setHeight(10* 70);
+        settings.setVersion("0.1");
+        settings.setTitle("Platformer Game");
+        settings.setMenuEnabled(true);
+        settings.setMenuKey(KeyCode.ESCAPE);
     }
 
     private Entity player;
@@ -89,7 +93,7 @@ public class PlatformerApp extends GameApplication {
             @Override
             protected void onCollisionBegin(Entity player, Entity door) {
                 getDisplay().showMessageBox("level complete", () -> {
-                    System.out.println("Dialog closed");
+                    exit();
                 });
             }
         });
